@@ -1,0 +1,103 @@
+<html>
+<head><meta charset="utf-8">
+
+</head>
+<body>
+
+<div id="pieChart"></div>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
+<script src="d3pie.min.js"></script>
+<script>
+var pie = new d3pie("pieChart", {
+	"header": {
+		"title": {
+			"text": "Par région",
+			"fontSize": 34,
+			"font": "courier"
+		},
+		"subtitle": {
+			"text": "Quelles sont les régions les plus primées ?",
+			"color": "#999999",
+			"fontSize": 10,
+			"font": "courier"
+		},
+		"location": "pie-center",
+		"titleSubtitlePadding": 10
+	},
+	"footer": {
+		"text": "* Source RTS",
+		"color": "#999999",
+		"fontSize": 10,
+		"font": "open sans",
+		"location": "bottom-left"
+	},
+	"size": {
+		"canvasWidth": 590,
+		"pieInnerRadius": "86%",
+		"pieOuterRadius": "77%"
+	},
+	"data": {
+		"sortOrder": "label-desc",
+		"smallSegmentGrouping": {
+			"enabled": true
+		},
+		"content": [
+			{
+				"label": "Tessin",
+				"value": 8,
+				"color": "#cac2ea"
+			},
+			{
+				"label": "Suisse allémanique",
+				"value": 60,
+				"color": "#9a97d5"
+			},
+			{
+				"label": "Suisse Romande",
+				"value": 34,
+				"color": "#797ab0"
+			}
+		]
+	},
+	"labels": {
+		"outer": {
+			"format": "label-percentage2",
+			"pieDistance": 20
+		},
+		"inner": {
+			"format": "none"
+		},
+		"mainLabel": {
+			"fontSize": 11
+		},
+		"percentage": {
+			"color": "#999999",
+			"fontSize": 11,
+			"decimalPlaces": 0
+		},
+		"value": {
+			"color": "#cccc43",
+			"fontSize": 11
+		},
+		"lines": {
+			"enabled": true,
+			"color": "#777777"
+		}
+	},
+	"effects": {
+		"pullOutSegmentOnClick": {
+			"effect": "elastic",
+			"speed": 500
+		}
+	},
+	"misc": {
+		"colors": {
+			"segmentStroke": "#000000"
+		}
+	},
+	"callbacks": {}
+});
+</script>
+
+</body>
+</html>
