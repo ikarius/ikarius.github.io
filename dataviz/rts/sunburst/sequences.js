@@ -1,11 +1,14 @@
-// Dimensions of sunburst.
-var width = 1024;
+// Dimensions of sunburst & sidepanel.
 var height = 600;
-var radius = Math.min(width, height) / 2;
+
+var p = { w: 210, h: height};
+var width = 840 ;
+//var radius = Math.min(width, height) / 2;
+var radius = 300;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
-  w: (width / 5), h: 30, s: 3, t: 10
+  w: 210, h: 25, s: 3, t: 10
 };
 
 // Mapping of step names to colors.
@@ -43,37 +46,37 @@ var colors = {
  "Policier": "#000080",
   "Road Movie/Migration": "#000080",
 
+"Meilleur film d'animation": "#67d9f4",
+"Meilleur Documentaire": "#a589a1",
+"Meilleure interprétation féminine": "#9a67f7",
+"Meilleure interprétation masculine": "#1cea8c",
+"Meilleur scénario": "#25ccc7",
+"Meilleure Musique de film": "#b234a6",
+"Meilleure photographie": "#b72929",
+"Meilleur court métrage": "#ed2e5b",
+"Meilleur second rôle": "#e89a3d",
 
-"Meilleur film de fiction": "#f09010",
-"Meilleur Documentaire": "#f09010",
-"Meilleur court métrage": "#f09010",
-"Meilleur film d'animation": "#f09010",
-"Meilleure interpétation féminine": "#f09010",
-"Meilleure interpétation masculine": "#f09010",
+"Meilleur film de fiction": "#0825f7",
 "Meilleur rôle principal": "#f09010",
 "Meilleur espoir": "#f09010",
-"Meilleur second rôle": "#f09010",
-"Meilleur scénario": "#f09010",
-"Meilleure Musique de film": "#f09010",
-"Meilleure photographie": "#f09010",
 
 
-"1998": "#e0e0e0",
-"1999": "#e0e0e0",
-"2000": "#e0e0e0",
-"2001": "#e0e0e0",
-"2002": "#e0e0e0",
-"2003": "#e0e0e0",
-"2004": "#e0e0e0",
-"2005": "#e0e0e0",
-"2006": "#e0e0e0",
-"2007": "#e0e0e0",
-"2008": "#e0e0e0",
-"2009": "#e0e0e0",
-"2010": "#e0e0e0",
-"2011": "#e0e0e0",
-"2012": "#e0e0e0",
-"2013": "#e0e0e0",
+"1998": "#c0c0c0",
+"1999": "#c0c0c0",
+"2000": "#c0c0c0",
+"2001": "#c0c0c0",
+"2002": "#c0c0c0",
+"2003": "#c0c0c0",
+"2004": "#c0c0c0",
+"2005": "#c0c0c0",
+"2006": "#c0c0c0",
+"2007": "#c0c0c0",
+"2008": "#c0c0c0",
+"2009": "#c0c0c0",
+"2010": "#c0c0c0",
+"2011": "#c0c0c0",
+"2012": "#c0c0c0",
+"2013": "#c0c0c0",
 
 };
 
@@ -92,15 +95,16 @@ var partition = d3.layout.partition()
     .value(function(d) { return d.size; });
 
 var arc = d3.svg.arc()
-    .startAngle(function(d) { return d.x; })
-    .endAngle(function(d) { return d.x + d.dx; })
-    .innerRadius(function(d) { return Math.sqrt(d.y); })
-    .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+    .startAngle(function(d) { return 1.0 *d.x; })
+    .endAngle(function(d) { return 1.0 * (d.x + d.dx); }) // Try 0.75 :)
+    .innerRadius(function(d) { return 1.0 * Math.sqrt(d.y); })
+    .outerRadius(function(d) { return 1.0 * Math.sqrt(d.y + d.dy); });
 
 // Use d3.text and d3.csv.parseRows so that we do not need to have a header
 // row, and can receive the csv as an array of arrays.
-d3.text("rts-sequences-test.csv", function(text) {
-  var csv = d3.csv.parseRows(text);
+d3.text("result.csv", function(text) {
+  var csv = d3.dsv(";", "text/plain").parseRows(text);
+  //var csv = d3.csv.parseRows(text);
   var json = buildHierarchy(csv);
   createVisualization(json);
 });
@@ -110,8 +114,6 @@ function createVisualization(json) {
 
   // Basic setup of page elements.
   initializeBreadcrumbTrail();
-  //drawLegend();
-  //d3.select("#togglelegend").on("click", toggleLegend);
 
   // Bounding circle underneath the sunburst, to make it easier to detect
   // when the mouse leaves the parent g.
@@ -151,8 +153,14 @@ function mouseover(d) {
     percentageString = "< 0.1%";
   }
 
-  d3.select("#percentage")
-      .text(percentageString);
+  d3.select("#titre")
+      .text(d.titre);
+
+  d3.select("#realisation")
+      .text(d.realisation);
+
+  d3.select("#laureat")
+      .text(d.laureat);
 
   d3.select("#explanation")
       .style("visibility", "");
@@ -210,13 +218,7 @@ function getAncestors(node) {
 function initializeBreadcrumbTrail() {
   // Add the svg area.
   var trail = d3.select("#sequence").append("svg:svg")
-      .attr("width", width)
-      .attr("height", 50)
-      .attr("id", "trail");
-  // Add the label at the end, for the percentage.
-  trail.append("svg:text")
-    .attr("id", "endlabel")
-    .style("fill", "#000");
+  .attr("width", width).attr("height", 50).attr("id", "trail")
 }
 
 // Generate a string that describes the points of a breadcrumb polygon.
@@ -263,61 +265,12 @@ function updateBreadcrumbs(nodeArray, percentageString) {
   // Remove exiting nodes.
   g.exit().remove();
 
-  // Now move and update the percentage at the end.
-  d3.select("#trail").select("#endlabel")
-      .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
-      .attr("y", b.h / 2)
-      .attr("dy", "0.35em")
-      .attr("text-anchor", "middle")
-      .text(percentageString);
-
   // Make the breadcrumb trail visible, if it's hidden.
   d3.select("#trail")
       .style("visibility", "");
 
 }
 
-function drawLegend() {
-
-  // Dimensions of legend item: width, height, spacing, radius of rounded rect.
-  var li = {
-    w: 220, h: 30, s: 3, r: 3
-  };
-
-  var legend = d3.select("#legend").append("svg:svg")
-      .attr("width", li.w)
-      .attr("height", d3.keys(colors).length * (li.h + li.s));
-
-  var g = legend.selectAll("g")
-      .data(d3.entries(colors))
-      .enter().append("svg:g")
-      .attr("transform", function(d, i) {
-              return "translate(0," + i * (li.h + li.s) + ")";
-           });
-
-  g.append("svg:rect")
-      .attr("rx", li.r)
-      .attr("ry", li.r)
-      .attr("width", li.w)
-      .attr("height", li.h)
-      .style("fill", function(d) { return d.value; });
-
-  g.append("svg:text")
-      .attr("x", li.w / 2)
-      .attr("y", li.h / 2)
-      .attr("dy", "0.35em")
-      .attr("text-anchor", "middle")
-      .text(function(d) { return d.key; });
-}
-
-function toggleLegend() {
-  var legend = d3.select("#legend");
-  if (legend.style("visibility") == "hidden") {
-    legend.style("visibility", "");
-  } else {
-    legend.style("visibility", "hidden");
-  }
-}
 
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
 // for a partition layout. The first column is a sequence of step names, from
@@ -328,6 +281,10 @@ function buildHierarchy(csv) {
   for (var i = 0; i < csv.length; i++) {
     var sequence = csv[i][0];
     var size = +csv[i][1];
+    var titre = csv[i][2];
+    var realisation = csv[i][3];
+    var laureat =  csv[i][4];
+
     if (isNaN(size)) { // e.g. if this is a header row
       continue;
     }
@@ -355,7 +312,8 @@ function buildHierarchy(csv) {
  	currentNode = childNode;
       } else {
  	// Reached the end of the sequence; create a leaf node.
- 	childNode = {"name": nodeName, "size": size};
+ 	childNode = {"name": nodeName, "size": size,
+ 	    "laureat": laureat, "titre": titre, "realisation": realisation};
  	children.push(childNode);
       }
     }

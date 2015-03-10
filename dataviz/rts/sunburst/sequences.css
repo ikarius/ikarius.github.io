@@ -1,37 +1,29 @@
+@font-face {
+    font-family: 'Brandon Grotesque Bold'; /*a name to be used later*/
+    src: url('./font.otf'); /*URL to font*/
+}
+
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Brandon Grotesque Bold', sans-serif;
   font-size: 12px;
   font-weight: 400;
-  background-color: #fff;
-  width: 960px;
+  background-color: #ddd;
+  width: 840px;
   height: 700px;
-  margin-top: 10px;
 }
 
 #main {
   float: left;
-  width: 750px;
-}
-
-#sidebar {
-  float: right;
-  width: 100px;
+  width: 840px;
 }
 
 #sequence {
-  width: 600px;
-  height: 70px;
+  width: 840px;
+  height: 30px;
 }
 
-#legend {
-  position: absolute;
-  right:50px;
-  text-align: right;
 
-  padding: 10px 0 0 3px;
-}
-
-#sequence text, #legend text {
+#sequence text {
   font-weight: 600;
   fill: #fff;
 }
@@ -46,14 +38,30 @@ body {
 
 #explanation {
   position: absolute;
-  top: 260px;
-  left: 30px;
-  width: 140px;
+  top: 200px;
+  left: 335px;
+  width: 170px;
   text-align: center;
   color: #666;
   z-index: -1;
 }
 
-#percentage {
-  font-size: 2.5em;
+#titre {
+  font-size: 2.2em;
+}
+
+#realisation {
+padding-top: 15px;
+  font-size: 1.8em;
+}
+
+#laureat {
+padding-top: 15px;
+  font-size: 1.2em;
+}
+
+#notes {
+  font-size: 1em;
+    height:50px;
+    wid
 }
