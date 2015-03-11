@@ -22,7 +22,6 @@ body {
     height: 30px;
 }
 
-
 #sequence text {
     font-weight: 600;
     fill: #fff;
@@ -50,6 +49,7 @@ body {
 #entete {
     font-size: 1.7em;
     text-align: center;
+    padding-bottom: 25px;
 }
 
 
