@@ -2,10 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Sequences sunburst</title>
+    <title>Festival du film</title>
     <script src="d3.v3.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-          href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
     <link rel="stylesheet" type="text/css" href="sequences.css"/>
 </head>
 <body>
@@ -13,9 +11,10 @@
     <div id="sequence"></div>
     <div id="chart">
         <div id="explanation" style="visibility: hidden;">
+            <span id="entete"></span><br>
             <span id="titre"></span><br/>
-            <span id="realisation"></span><br/>
-            <span id="laureat"></span><br/>
+            <span class="labelx">Réalisation: </span><span id="realisation"></span><br/>
+            <span class="labelx" id="labellaureat">Lauréat: </span><span id="laureat"></span><br/>
         </div>
     </div>
     <div id="notes">
