@@ -4,7 +4,7 @@ var height = 600;
 var p = { w: 210, h: height};
 var width = 840 ;
 //var radius = Math.min(width, height) / 2;
-var radius = 300;
+var radius = 280;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
@@ -100,6 +100,17 @@ var arc = d3.svg.arc()
     .innerRadius(function(d) { return 1.0 * Math.sqrt(d.y); })
     .outerRadius(function(d) { return 1.0 * Math.sqrt(d.y + d.dy); });
 
+  // Tooltip init
+var tooltip = d3.select('#chart')            // NEW
+    .append('div')                             // NEW
+    .attr('class', 'tooltip');                 // NEW
+
+  tooltip.append('div')                        // NEW
+    .attr('class', 'label');                   // NEW
+
+  tooltip.append('div')                        // NEW
+    .attr('class', 'percent');                 // NEW
+
 // Use d3.text and d3.csv.parseRows so that we do not need to have a header
 // row, and can receive the csv as an array of arrays.
 d3.text("result.csv", function(text) {
@@ -135,7 +146,9 @@ function createVisualization(json) {
       .attr("fill-rule", "evenodd")
       .style("fill", function(d) { return colors[d.name]; })
       .style("opacity", 1)
-      .on("mouseover", mouseover);
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove);
+
 
   // Add the mouseleave handler to the bounding circle.
   d3.select("#container").on("mouseleave", mouseleave);
@@ -147,12 +160,6 @@ function createVisualization(json) {
 // Fade all but the current sequence, and show it in the breadcrumb trail.
 function mouseover(d) {
 
-  var percentage = (100 * d.value / totalSize).toPrecision(3);
-  var percentageString = percentage + "%";
-  if (percentage < 0.1) {
-    percentageString = "< 0.1%";
-  }
-
   d3.select("#titre")
       .text(d.titre);
 
@@ -160,13 +167,13 @@ function mouseover(d) {
       .text(d.realisation);
 
   d3.select("#laureat")
-      .text(d.laureat);
+      .text(d.laureat != "NA" ? d.laureat : "");
 
   d3.select("#explanation")
       .style("visibility", "");
 
   var sequenceArray = getAncestors(d);
-  updateBreadcrumbs(sequenceArray, percentageString);
+  updateBreadcrumbs(sequenceArray);
 
   // Fade all the segments.
   d3.selectAll("path")
@@ -178,6 +185,8 @@ function mouseover(d) {
                 return (sequenceArray.indexOf(node) >= 0);
               })
       .style("opacity", 1);
+
+   tooltip.style("visibility", "");
 }
 
 // Restore everything to full opacity when moving off the visualization.
@@ -201,6 +210,26 @@ function mouseleave(d) {
 
   d3.select("#explanation")
       .style("visibility", "hidden");
+
+ tooltip.style("visibility", "hidden");
+}
+
+function mousemove(d) {
+
+  var percentage = (100 * d.value / totalSize).toPrecision(3);
+  var percentageString = percentage + "%";
+  if (percentage < 0.1) {
+    percentageString = "< 0.1%";
+  }
+
+  // Tooltip update
+
+   tooltip.select('.label').html(d.name);
+   tooltip.select('.percent').html(percentageString);
+   tooltip.style('display', 'block');
+
+   tooltip.style('top', (d3.event.pageY) + 'px')
+          .style('left', (d3.event.pageX) + 'px');
 }
 
 // Given a node in a partition layout, return an array of all of its ancestor
@@ -235,8 +264,8 @@ function breadcrumbPoints(d, i) {
   return points.join(" ");
 }
 
-// Update the breadcrumb trail to show the current sequence and percentage.
-function updateBreadcrumbs(nodeArray, percentageString) {
+// Update the breadcrumb trail to show the current sequence.
+function updateBreadcrumbs(nodeArray) {
 
   // Data join; key function combines name and depth (= position in sequence).
   var g = d3.select("#trail")
@@ -266,9 +295,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
   g.exit().remove();
 
   // Make the breadcrumb trail visible, if it's hidden.
-  d3.select("#trail")
-      .style("visibility", "");
-
+  d3.select("#trail").style("visibility", "");
 }
 
 

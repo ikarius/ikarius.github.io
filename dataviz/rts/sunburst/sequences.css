@@ -43,7 +43,6 @@ body {
   width: 170px;
   text-align: center;
   color: #666;
-  z-index: -1;
 }
 
 #titre {
@@ -64,4 +63,19 @@ padding-top: 15px;
   font-size: 1em;
     height:50px;
     wid
+}
+
+.tooltip {
+  background: #eee;
+  box-shadow: 0 0 5px #999999;
+  color: #333;
+  display: none;
+  font-size: 12px;
+  left: 130px;
+  padding: 10px;
+  position: absolute;
+  text-align: center;
+  top: 95px;
+  width: 80px;
+  z-index: 10;
 }
