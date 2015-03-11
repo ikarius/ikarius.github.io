@@ -5,7 +5,7 @@ var p = { w: 210, h: height};
 var width = 840 ;
 //var radius = Math.min(width, height) / 2;
 var radius = 280;
-var aperture = -.75;
+var aperture = -.82;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
